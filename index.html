@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nikolaj Saudella — Design tests</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #fff; --ink: #0d0c0c; --gray: #8c8c8c; --line: rgba(13,12,12,.12); --pad: clamp(20px, 4vw, 64px); --ease: cubic-bezier(.19,1,.22,1); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; padding: var(--pad); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding-bottom: clamp(60px, 8vw, 120px); }
+  h1 { margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(44px, 6vw, 104px); line-height: .95; letter-spacing: -.03em; }
+  h1 em { font-style: italic; }
+  .small { color: var(--gray); font-size: 13px; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 32px); }
+  .shot { overflow: hidden; aspect-ratio: 16 / 10; background: #eee; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  a:hover .shot img { transform: scale(1.04); }
+  .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 18px 0 8px; border-bottom: 1px solid var(--line); }
+  .meta h2 { margin: 0; font-weight: 400; font-size: clamp(24px, 2vw, 32px); letter-spacing: -.03em; }
+  p { margin: 12px 0 0; color: #4a4949; max-width: 44ch; }
+  footer { margin-top: clamp(60px, 8vw, 120px); padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; }
+  @media (max-width: 900px) { ul { grid-template-columns: 1fr; } header { flex-direction: column; } }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Three directions,<br><em>one</em> operator.</h1>
+    <span class="small">Design tests — inspired by dennissnellenberg.com</span>
+  </header>
+  <ul>
+    <li><a href="studio.html">
+      <div class="shot"><img src="assets/previews/studio.webp" alt="Studio version preview"></div>
+      <div class="meta"><h2>01 — Studio</h2><span class="small">Dark · Inter Tight · blue</span></div>
+      <p>The closest to the reference: full-height portrait on a matching dark stage, giant name marquee that follows scroll direction, magnetic round buttons, work list with a floating preview, curved footer.</p>
+    </a></li>
+    <li><a href="editorial.html">
+      <div class="shot"><img src="assets/previews/editorial.webp" alt="Editorial version preview"></div>
+      <div class="meta"><h2>02 — Editorial</h2><span class="small">Paper · Instrument Serif · Bologna red</span></div>
+      <p>Your serif voice on the same structure: black &amp; white portrait with a colour spotlight on hover, serif marquee passing behind it, the interactive sentence, count-up stats and a TESSA “now” card.</p>
+    </a></li>
+    <li><a href="kinetic.html">
+      <div class="shot"><img src="assets/previews/kinetic.webp" alt="Kinetic version preview"></div>
+      <div class="meta"><h2>03 — Kinetic</h2><span class="small">Grey · Archivo Expanded · lime</span></div>
+      <p>The boldest one: a fitted giant name that parts while the portrait grows to full screen, a horizontal track record, a “previously” double marquee and a lime call to action.</p>
+    </a></li>
+  </ul>
+  <footer class="small"><span>Nikolaj Saudella</span><span>2026</span></footer>
+</body>
+</html>
