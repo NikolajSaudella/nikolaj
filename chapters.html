@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nikolaj Saudella — Chapters</title>
+<meta name="description" content="Nikolaj Saudella — operator first, founder second. Currently building TESSA.">
+<meta name="theme-color" content="#0b0b0c">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/nikolaj.webp" fetchpriority="high">
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --panel: #0d0c0c;
+    --ink: #f2f2f0;
+    --dim: rgba(242,242,240,.5);
+    --faint: rgba(242,242,240,.14);
+    --line: rgba(242,242,240,.1);
+    --blue: #4a63ff;
+    --gut: clamp(20px, 5vw, 96px);
+    --sans: 'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --ease: cubic-bezier(.19,1,.22,1);
+    --io: cubic-bezier(.76,0,.24,1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { overflow-x: clip; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  a, button { color: inherit; font: inherit; text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+  ::selection { background: var(--blue); color: #fff; }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; border-radius: 3px; }
+  .label { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+  /* ---------- The stage: one portrait, re-framed for every chapter ---------- */
+  .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: var(--panel); }
+  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 26%;
+    transform: scale(var(--s, 1)); transform-origin: var(--o, 50% 30%); filter: var(--f, none);
+    transition: transform 1.5s var(--io), transform-origin 1.5s var(--io), filter 1.2s ease; }
+  .tint { position: absolute; inset: 0; background: var(--blue); mix-blend-mode: color; opacity: var(--t, 0); transition: opacity 1.2s ease; pointer-events: none; }
+  .stage::after { content: ""; position: absolute; inset: 55% 0 0; background: linear-gradient(to top, rgba(11,11,12,.85), rgba(11,11,12,0)); pointer-events: none; }
+  .stage[data-s="0"] { --s: 1; --o: 50% 30%; }
+  .stage[data-s="1"] { --s: 2.3; --o: 50% 27%; --f: grayscale(1) contrast(1.1); }
+  .stage[data-s="2"] { --s: 1.7; --o: 36% 30%; --f: sepia(.25) saturate(1.1) brightness(.95); }
+  .stage[data-s="3"] { --s: 1.12; --o: 50% 20%; --f: grayscale(1) contrast(1.15); --t: .85; }
+  .stage[data-s="4"] { --s: 1.45; --o: 52% 60%; --f: sepia(.2) saturate(1.1); }
+  .stage[data-s="5"] { --s: 1; --o: 50% 30%; --f: grayscale(1) brightness(.55); }
+  .stage[data-s="6"] { --s: 1.05; --o: 50% 26%; }
+
+  .odo { position: absolute; left: var(--gut); bottom: clamp(18px, 4vh, 44px); z-index: 2; height: 1em; overflow: hidden; font-size: clamp(110px, 17vw, 300px); line-height: 1; font-weight: 500; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1px rgba(242,242,240,.7); }
+  .odo span { display: block; transform: translateY(calc(var(--i, 0) * -1em)); transition: transform 1.2s var(--io); }
+  .odo span b { display: block; height: 1em; font-weight: inherit; }
+  .caption { position: absolute; right: var(--gut); bottom: clamp(26px, 5vh, 56px); z-index: 2; text-align: right; font-size: 13px; color: var(--dim); }
+  .caption strong { display: block; font-weight: 500; color: var(--ink); font-size: 15px; }
+  .rail { position: absolute; top: 0; right: 0; bottom: 0; width: 2px; background: var(--line); z-index: 3; }
+  .rail i { position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: var(--blue); transform: scaleY(var(--p, 0)); transform-origin: 50% 0; }
+
+  /* ---------- Header over the reading column ---------- */
+  .head { position: fixed; top: 0; left: 50vw; right: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: clamp(20px, 2.4vw, 34px) var(--gut); background: linear-gradient(var(--bg) 40%, rgba(11,11,12,0)); }
+  .logo { font-weight: 600; letter-spacing: -.02em; }
+  .head nav { display: flex; gap: clamp(16px, 2vw, 30px); font-size: 14px; }
+  .head nav a { color: var(--dim); transition: color .3s ease; }
+  .head nav a:hover { color: var(--ink); }
+
+  /* ---------- Chapters ---------- */
+  .ch { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 3vh, 36px); padding: clamp(110px, 14vh, 150px) var(--gut); border-bottom: 1px solid var(--line); }
+  .ch h1 { font-size: clamp(54px, 6.4vw, 124px); line-height: .92; letter-spacing: -.045em; font-weight: 500; }
+  .ch .big { font-size: clamp(96px, 13vw, 250px); line-height: .82; letter-spacing: -.06em; font-weight: 500; }
+  .ch .big small { font-size: .32em; letter-spacing: -.03em; color: var(--dim); margin-left: .1em; }
+  .ch .big em { letter-spacing: -.03em; }
+  .ch p.text { max-width: 36ch; font-size: clamp(17px, 1.35vw, 22px); line-height: 1.45; color: var(--dim); }
+  .ch p.text b { font-weight: 500; color: var(--ink); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tags span { padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--dim); }
+  .prev li { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .prev li:first-child { border-top: 1px solid var(--line); }
+  .prev b { font-size: clamp(34px, 3.6vw, 64px); font-weight: 500; letter-spacing: -.04em; transition: transform .6s var(--ease), color .4s ease; }
+  .prev li:hover b { transform: translateX(10px); color: var(--blue); }
+  .mail { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 16px 22px; border-radius: 999px; border: 1px solid var(--line); font-size: 15px; transition: background .4s ease, border-color .4s ease; }
+  .btn.solid { background: var(--blue); border-color: var(--blue); }
+  .btn:hover { border-color: var(--ink); }
+  .btn.solid:hover { background: #3348e6; }
+  .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--dim); padding-top: 26px; border-top: 1px solid var(--line); margin-top: 20px; }
+
+  .ch > * { opacity: .12; transform: translateY(24px); transition: opacity .9s ease, transform 1.2s var(--ease); }
+  .ch.on > * { opacity: 1; transform: none; }
+  .ch.on > :nth-child(2) { transition-delay: .08s; }
+  .ch.on > :nth-child(3) { transition-delay: .16s; }
+  .ch.on > :nth-child(4) { transition-delay: .24s; }
+
+  @media (max-width: 900px) {
+    .layout { display: block; }
+    .stage { height: 44svh; z-index: 5; }
+    .odo { font-size: 26vw; left: 20px; }
+    .caption { right: 20px; }
+    .rail { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 2px; }
+    .rail i { width: 100%; height: 2px; transform: scaleX(var(--p, 0)); transform-origin: 0 50%; }
+    .head { left: 0; background: none; mix-blend-mode: difference; }
+    .head nav a:not(:last-child) { display: none; }
+    .ch { min-height: 70svh; padding: 60px 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; }
+    .ch > * { opacity: 1 !important; transform: none !important; }
+  }
+  html:not(.js) .ch > * { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<header class="head">
+  <a href="#c0" class="logo" data-scroll>Nikolaj Saudella</a>
+  <nav aria-label="Primary"><a href="#c4" data-scroll>Now</a><a href="#c5" data-scroll>Previously</a><a href="#c6" data-scroll>Contact</a></nav>
+</header>
+
+<div class="layout">
+  <aside class="stage" id="stage" data-s="0" aria-hidden="true">
+    <img src="assets/nikolaj.webp" srcset="assets/nikolaj-900.webp 900w, assets/nikolaj.webp 1334w" sizes="(min-width: 900px) 50vw, 100vw" width="1334" height="2000" alt="" fetchpriority="high">
+    <div class="tint"></div>
+    <div class="odo num"><span id="odo"><b>00</b><b>01</b><b>02</b><b>03</b><b>04</b><b>05</b><b>06</b></span></div>
+    <div class="caption"><strong id="capTitle">Nikolaj Saudella</strong><span id="capSub">Bologna, Italy</span></div>
+    <div class="rail"><i id="rail"></i></div>
+  </aside>
+
+  <main class="flow">
+    <section class="ch on" id="c0" data-t="Nikolaj Saudella" data-u="Bologna, Italy">
+      <span class="label">Chapter 00 — Intro</span>
+      <h1>Operator first,<br><em>founder</em> second.</h1>
+      <p class="text">Nineteen, based in Bologna. This is the short version of how I got here, one chapter at a time.</p>
+    </section>
+
+    <section class="ch" id="c1" data-t="Employee #1" data-u="Esports">
+      <span class="label">Chapter 01 — Employee #1</span>
+      <p class="big num">45<small>people</small></p>
+      <p class="text">I joined an esports org as employee number one and helped grow the team to <b>45 people</b>, all the way to <b>a national title</b>.</p>
+    </section>
+
+    <section class="ch" id="c2" data-t="At eighteen" data-u="Funding">
+      <span class="label">Chapter 02 — At eighteen</span>
+      <p class="big num">€40K</p>
+      <p class="text">Raised at eighteen for the esports org, while the team was still growing around me.</p>
+    </section>
+
+    <section class="ch" id="c3" data-t="Red Bull Basement ’26" data-u="National final">
+      <span class="label">Chapter 03 — Red Bull Basement ’26</span>
+      <p class="big num">10<small>/ 3,000</small></p>
+      <p class="text">TESSA reached the national final of Red Bull Basement ’26, <b>top 10 out of 3,000</b> teams.</p>
+    </section>
+
+    <section class="ch" id="c4" data-t="TESSA" data-u="Now">
+      <span class="label">Chapter 04 — Now</span>
+      <p class="big"><em>TESSA</em></p>
+      <p class="text">AI real estate certification. We turn <b>underused real estate into certified workspace</b>.</p>
+      <div class="tags"><span>UniBo pre-accelerator</span><span>Red Bull Basement ’26 finalist</span><span>YC Startup School</span></div>
+    </section>
+
+    <section class="ch" id="c5" data-t="Previously" data-u="Before TESSA">
+      <span class="label">Chapter 05 — Previously</span>
+      <ul class="prev">
+        <li><b>RTZN</b><span class="label">Prev.</span></li>
+        <li><b>Yutoru</b><span class="label">Prev.</span></li>
+        <li><b>Mkers</b><span class="label">Prev.</span></li>
+        <li><b>DSYRE</b><span class="label">Prev.</span></li>
+      </ul>
+    </section>
+
+    <section class="ch" id="c6" data-t="Next chapter" data-u="Let’s write it">
+      <span class="label">Chapter 06 — Next</span>
+      <h1>The next chapter<br>starts with <em>hello.</em></h1>
+      <div class="mail">
+        <button type="button" class="btn solid" id="copy"><span id="copyTag">niksau.ns@gmail.com — copy</span></button>
+        <a class="btn" href="https://www.linkedin.com/in/nikolajsaudella/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+      </div>
+      <div class="foot"><span>© 2026 Nikolaj Saudella</span><span class="num">Bologna <span id="clock">—</span></span><a href="#c0" data-scroll>Back to chapter 00 ↑</a></div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/lenis.min.js"></script>
+<script>
+(function () {
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var lenis = (!reduced && window.Lenis) ? new Lenis({ lerp: 0.09 }) : null;
+
+  $$('[data-scroll]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault(); var el = $(a.getAttribute('href'));
+      if (lenis) lenis.scrollTo(el, { duration: 1.6 }); else el.scrollIntoView();
+    });
+  });
+
+  var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit' });
+  (function tick() { $('#clock').textContent = fmt.format(new Date()); setTimeout(tick, 15000); })();
+  $('#copy').addEventListener('click', function () {
+    var tag = $('#copyTag');
+    if (navigator.clipboard) navigator.clipboard.writeText('niksau.ns@gmail.com').then(function () { tag.textContent = 'Copied to clipboard'; setTimeout(function () { tag.textContent = 'niksau.ns@gmail.com — copy'; }, 1800); }, function () {});
+  });
+
+  /* ---- The chapter under the reading line drives the stage ---- */
+  var stage = $('#stage'), odo = $('#odo'), rail = $('#rail'), chs = $$('.ch'), cur = -1;
+  var capT = $('#capTitle'), capU = $('#capSub');
+  function frame(t) {
+    if (lenis) lenis.raf(t);
+    var vh = innerHeight, mobile = innerWidth <= 900;
+    var line = mobile ? stage.offsetHeight + (vh - stage.offsetHeight) * .45 : vh * .5;
+    var idx = 0;
+    chs.forEach(function (c, i) { if (c.getBoundingClientRect().top < line) idx = i; });
+    if (idx !== cur) {
+      cur = idx;
+      stage.dataset.s = idx;
+      odo.style.setProperty('--i', idx);
+      capT.textContent = chs[idx].dataset.t; capU.textContent = chs[idx].dataset.u;
+      chs.forEach(function (c, i) { c.classList.toggle('on', i === idx); });
+    }
+    var y = lenis ? lenis.scroll : scrollY, max = document.documentElement.scrollHeight - vh;
+    rail.style.setProperty('--p', clamp(y / max, 0, 1).toFixed(4));
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

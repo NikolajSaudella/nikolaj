@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nikolaj Saudella — Cinema</title>
+<meta name="description" content="Nikolaj Saudella — operator first, founder second. Currently building TESSA.">
+<meta name="theme-color" content="#000000">
+<script>document.documentElement.classList.add('js', 'is-loading');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Instrument+Serif:ital@0;1&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/nikolaj.webp" fetchpriority="high">
+<style>
+  :root {
+    --black: #000;
+    --screen: #0d0c0c;          /* the portrait's own background */
+    --ink: #ecebe7;
+    --dim: rgba(236,235,231,.5);
+    --faint: rgba(236,235,231,.18);
+    --line: rgba(236,235,231,.12);
+    --sub: #ffd84d;             /* subtitle yellow */
+    --pad: clamp(18px, 3vw, 52px);
+    --title: 'Jost', 'Futura', 'Century Gothic', sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+    --ease: cubic-bezier(.19,1,.22,1);
+    --io: cubic-bezier(.76,0,.24,1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { overflow-x: clip; }
+  body { background: var(--black); color: var(--ink); font-family: var(--title); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  html.is-loading body { overflow: hidden; }
+  a, button { color: inherit; font: inherit; text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  ::selection { background: var(--sub); color: var(--black); }
+  :focus-visible { outline: 1px solid var(--sub); outline-offset: 4px; }
+  .caps { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; }
+  .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+  .dim { color: var(--dim); }
+
+  /* film grain over everything */
+  .grain { position: fixed; inset: -50%; z-index: 90; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation: grain 1s steps(6) infinite; }
+  @keyframes grain { 0% { transform: translate(0,0); } 20% { transform: translate(-3%,2%); } 40% { transform: translate(2%,-3%); } 60% { transform: translate(-2%,-1%); } 80% { transform: translate(3%,3%); } 100% { transform: translate(0,0); } }
+
+  /* ---------- Leader countdown ---------- */
+  .leader { position: fixed; inset: 0; z-index: 100; background: #111; display: grid; place-items: center; color: #d9d6cf; transition: opacity .12s linear; }
+  .leader.out { opacity: 0; pointer-events: none; }
+  .dial { position: relative; width: min(64vmin, 520px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; }
+  .dial::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(rgba(217,214,207,.16) var(--sweep, 0deg), transparent 0); }
+  .dial::after { content: ""; position: absolute; inset: 7%; border-radius: 50%; border: 2px solid rgba(217,214,207,.5); box-shadow: 0 0 0 10px #111, 0 0 0 12px rgba(217,214,207,.3); }
+  .cross { position: absolute; inset: -30vmax; background: linear-gradient(rgba(217,214,207,.4), rgba(217,214,207,.4)) 50% 0 / 1px 100% no-repeat, linear-gradient(90deg, rgba(217,214,207,.4), rgba(217,214,207,.4)) 0 50% / 100% 1px no-repeat; }
+  .count { position: relative; z-index: 1; font-size: min(34vmin, 280px); font-weight: 300; line-height: 1; }
+  .leader .mono { position: absolute; bottom: var(--pad); left: var(--pad); right: var(--pad); display: flex; justify-content: space-between; color: rgba(217,214,207,.5); }
+  html:not(.js) .leader, html.no-leader .leader { display: none; }
+
+  /* ---------- Fixed chrome in the letterbox ---------- */
+  .bar { position: fixed; left: 0; right: 0; z-index: 30; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; padding: 0 var(--pad); height: 64px; pointer-events: none; }
+  .bar > * { pointer-events: auto; }
+  .bar.top { top: 0; background: var(--black); }
+  .bar .r { justify-self: end; display: flex; align-items: center; gap: 22px; }
+  .rec { display: inline-flex; align-items: center; gap: 8px; }
+  .rec i { width: 7px; height: 7px; border-radius: 50%; background: #e53b2c; animation: blink 1.4s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .15; } }
+  .scenes { display: flex; gap: 6px; }
+  .scenes a { padding: 6px 8px; color: var(--dim); transition: color .3s ease; }
+  .scenes a:hover, .scenes a.on { color: var(--ink); }
+  .scenes a.on { text-decoration: underline; text-underline-offset: 5px; }
+
+  /* ---------- Frames ---------- */
+  .frame-wrap { min-height: 100vh; min-height: 100svh; display: grid; place-items: center; position: relative; }
+  .frame { position: relative; width: 100%; height: clamp(60svh, 41.84vw, calc(100svh - 150px)); background: var(--screen); overflow: hidden; }
+
+  /* opening shot */
+  .opening .frame { clip-path: inset(calc((1 - var(--open, 1)) * 50%) 0); }
+  .shot { position: absolute; top: -20%; right: 3%; height: 150%; aspect-ratio: 1334 / 2000; animation: push 22s ease-in-out infinite alternate; transform-origin: 60% 30%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22%, #000 90%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 22%, #000 90%, transparent 100%); }
+  .shot img { width: 100%; height: 100%; object-fit: cover; }
+  @keyframes push { to { transform: scale(1.07) translateX(-1%); } }
+  .starring { position: absolute; left: var(--pad); top: 50%; transform: translateY(-50%); z-index: 2; }
+  .starring .caps { color: var(--dim); display: block; margin-bottom: 22px; }
+  .starring h1 { font-size: clamp(44px, 6.4vw, 120px); font-weight: 300; line-height: .95; letter-spacing: .08em; text-transform: uppercase; }
+  .starring h1 span { display: block; }
+  .starring p { margin-top: 26px; font-family: var(--serif); font-size: clamp(22px, 2vw, 34px); font-style: italic; color: var(--dim); }
+  .subtitle { position: absolute; left: 0; right: 0; bottom: 8%; z-index: 3; text-align: center; padding: 0 var(--pad); font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; font-weight: 500; font-size: clamp(16px, 1.45vw, 24px); color: var(--sub); text-shadow: 0 1px 2px rgba(0,0,0,.9), 0 0 12px rgba(0,0,0,.6); min-height: 1.4em; }
+  .below { position: absolute; left: var(--pad); right: var(--pad); bottom: 22px; display: flex; justify-content: space-between; align-items: center; color: var(--dim); }
+
+  /* entrance */
+  .starring > *, .subtitle { opacity: 0; transform: translateY(12px); }
+  html.is-ready .starring > *, html.is-ready .subtitle { opacity: 1; transform: none; transition: opacity 1.4s ease, transform 1.6s var(--ease); transition-delay: var(--d, .3s); }
+
+  /* ---------- Scenes ---------- */
+  .scene .frame { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .scene.flip .frame { direction: rtl; }
+  .scene.flip .frame > * { direction: ltr; }
+  .slate { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(22px, 3vw, 52px); }
+  .slate .top { display: flex; justify-content: space-between; gap: 20px; color: var(--dim); }
+  .slate h2 { font-family: var(--serif); font-size: clamp(54px, 7vw, 140px); line-height: .9; letter-spacing: -.02em; }
+  .slate h2 em { color: var(--sub); }
+  .slate p { margin-top: 22px; max-width: 34ch; font-size: clamp(15px, 1.15vw, 18px); color: var(--dim); line-height: 1.55; }
+  .insert { position: relative; overflow: hidden; }
+  /* the same --o point of the photo is pinned in the frame and used as the zoom origin */
+  .insert img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--o, 50% 30%); transform: scale(calc(var(--z, 1) * var(--k, 1.12))); transform-origin: var(--o, 50% 30%); will-change: transform; }
+  .insert .tc { position: absolute; left: 16px; bottom: 14px; color: rgba(236,235,231,.75); }
+  .insert.bw img { filter: grayscale(1) contrast(1.15) brightness(.95); }
+  .insert.warm img { filter: sepia(.35) saturate(1.2) brightness(.9); }
+  .scene .cap { position: absolute; left: 0; right: 0; bottom: -44px; text-align: center; color: var(--dim); }
+
+  .s4 .frame { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+
+  /* cast list */
+  .cast { padding: clamp(22px, 3vw, 52px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: center; gap: 0 clamp(20px, 4vw, 80px); }
+  .cast li { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding: clamp(10px, 1.4vw, 20px) 0; border-bottom: 1px solid var(--line); }
+  .cast b { font-weight: 300; font-size: clamp(34px, 4vw, 76px); letter-spacing: .06em; text-transform: uppercase; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 1.2s ease, transform 1.4s var(--ease); transition-delay: var(--d, 0s); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- End credits ---------- */
+  .credits { padding: clamp(120px, 16vw, 260px) var(--pad) 0; text-align: center; }
+  .credits h2 { font-family: var(--serif); font-style: italic; font-size: clamp(44px, 5vw, 96px); line-height: 1; }
+  .roll { margin: clamp(70px, 9vw, 140px) auto 0; max-width: 820px; display: grid; gap: clamp(26px, 3vw, 44px); }
+  .roll li { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: baseline; }
+  .roll .role { text-align: right; color: var(--dim); }
+  .roll .who { text-align: left; font-size: clamp(18px, 1.6vw, 26px); letter-spacing: .06em; text-transform: uppercase; font-weight: 400; }
+  .roll .who small { display: block; font-size: 12px; letter-spacing: .2em; color: var(--dim); margin-top: 4px; }
+  .tbc { margin-top: clamp(140px, 16vw, 260px); }
+  .tbc .caps { color: var(--dim); }
+  .tbc h3 { margin-top: 22px; font-size: clamp(40px, 6.6vw, 128px); font-weight: 300; letter-spacing: .06em; text-transform: uppercase; line-height: .95; }
+  .contact { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 16px; margin-top: 44px; }
+  .contact .addr { font-family: var(--serif); font-size: clamp(26px, 2.6vw, 44px); padding: 0 6px; background: linear-gradient(var(--sub), var(--sub)) 0 100% / 0 2px no-repeat; transition: background-size .6s var(--ease); }
+  .contact .addr:hover { background-size: 100% 2px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border: 1px solid var(--line); border-radius: 999px; transition: background .4s ease, color .4s ease, border-color .4s ease; }
+  .btn:hover { background: var(--sub); color: var(--black); border-color: var(--sub); }
+  .fin { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: clamp(120px, 14vw, 220px); padding: 22px 0 26px; border-top: 1px solid var(--line); color: var(--dim); }
+
+  @media (max-width: 900px) {
+    .bar { grid-template-columns: 1fr auto; }
+    .bar .c, .scenes { display: none; }
+    .shot { right: -18%; top: -6%; height: 118%; }
+    .opening .frame::after { content: ""; position: absolute; inset: 35% 0 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,.82) 10%, rgba(0,0,0,0)); pointer-events: none; }
+    .starring { top: auto; bottom: 22%; transform: none; }
+    .starring h1 { font-size: 12vw; }
+    .subtitle { bottom: 5%; }
+    .scene .frame, .s4 .frame { grid-template-columns: 1fr; grid-template-rows: auto minmax(300px, 46svh); height: auto; }
+    .s4 .frame { grid-template-rows: auto auto; }
+    .scene.flip .frame { direction: ltr; }
+    .cast { grid-template-columns: 1fr; }
+    .roll li { grid-template-columns: 1fr; gap: 4px; text-align: center; }
+    .roll .role, .roll .who { text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+    .reveal, .starring > *, .subtitle { opacity: 1 !important; transform: none !important; }
+  }
+  html:not(.js) .reveal, html:not(.js) .starring > *, html:not(.js) .subtitle { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<div class="leader" id="leader" aria-hidden="true">
+  <div class="cross"></div>
+  <div class="dial" id="dial"><span class="count" id="count">3</span></div>
+  <div class="mono"><span>NIKOLAJ SAUDELLA</span><span>REEL 01 — BOLOGNA</span><span>24 FPS</span></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="bar top">
+  <a href="#top" class="caps" data-scroll>Nikolaj Saudella</a>
+  <span class="c caps dim">Bologna — 2026</span>
+  <div class="r">
+    <nav class="scenes mono" aria-label="Scenes">
+      <a href="#s1" data-scroll>01</a><a href="#s2" data-scroll>02</a><a href="#s3" data-scroll>03</a><a href="#s4" data-scroll>04</a><a href="#credits" data-scroll>END</a>
+    </nav>
+    <span class="rec mono"><i></i><span id="tc">00:00:00:00</span></span>
+  </div>
+</header>
+
+<main>
+  <!-- ================= OPENING ================= -->
+  <section class="frame-wrap opening" id="top">
+    <div class="frame">
+      <div class="shot"><img src="assets/nikolaj.webp" srcset="assets/nikolaj-900.webp 900w, assets/nikolaj.webp 1334w" sizes="(min-width: 900px) 70vw, 120vw" width="1334" height="2000" alt="Nikolaj Saudella, lit from one side against a black background" fetchpriority="high"></div>
+      <div class="starring">
+        <span class="caps" style="--d:.2s">Starring</span>
+        <h1 style="--d:.35s"><span>Nikolaj</span><span>Saudella</span></h1>
+        <p style="--d:.55s">Operator first, founder second.</p>
+      </div>
+      <p class="subtitle" id="subtitle" aria-live="polite" style="--d:.9s">— Hi. I’m Nikolaj.</p>
+    </div>
+    <div class="below mono"><span>Scroll to play</span><span>4 scenes · end credits</span></div>
+  </section>
+
+  <!-- ================= SCENE 01 ================= -->
+  <section class="frame-wrap scene" id="s1">
+    <div class="frame">
+      <div class="slate">
+        <div class="top mono"><span>SCENE 01</span><span>INT. ESPORTS ORG — EMPLOYEE #1</span></div>
+        <div class="reveal"><h2><em>45</em> people.</h2><p>I joined as employee number one and grew the team to 45, raised €40K at eighteen and took a national title.</p></div>
+      </div>
+      <div class="insert" style="--o:50% 28%; --k:1.9"><img src="assets/nikolaj.webp" alt="" loading="lazy"><span class="tc mono">INSERT — EYES</span></div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 02 ================= -->
+  <section class="frame-wrap scene flip" id="s2">
+    <div class="frame">
+      <div class="slate">
+        <div class="top mono"><span>SCENE 02</span><span>EXT. RED BULL BASEMENT ’26 — NATIONAL FINAL</span></div>
+        <div class="reveal"><h2>Top 10 <em>of</em> 3,000.</h2><p>TESSA made the national final of Red Bull Basement ’26, out of three thousand teams.</p></div>
+      </div>
+      <div class="insert bw" style="--o:38% 34%; --k:1.35"><img src="assets/nikolaj.webp" alt="" loading="lazy"><span class="tc mono">B&amp;W — HALF LIGHT</span></div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 03 ================= -->
+  <section class="frame-wrap scene" id="s3">
+    <div class="frame">
+      <div class="slate">
+        <div class="top mono"><span>SCENE 03</span><span>INT. UNIBO PRE-ACCELERATOR — NOW</span></div>
+        <div class="reveal"><h2><em>TESSA.</em></h2><p>AI real estate certification: turning underused real estate into certified workspace. Also in the room: YC Startup School.</p></div>
+      </div>
+      <div class="insert warm" style="--o:52% 62%; --k:1.7"><img src="assets/nikolaj.webp" alt="" loading="lazy"><span class="tc mono">DETAIL — COLLAR</span></div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 04 ================= -->
+  <section class="frame-wrap scene s4" id="s4">
+    <div class="frame">
+      <div class="slate">
+        <div class="top mono"><span>SCENE 04</span><span>MONTAGE — PREVIOUSLY</span></div>
+        <div class="reveal"><h2>The <em>cast</em><br>so far.</h2></div>
+      </div>
+      <ul class="cast">
+        <li class="reveal"><b>RTZN</b><span class="mono dim">PREV.</span></li>
+        <li class="reveal" style="--d:.08s"><b>Yutoru</b><span class="mono dim">PREV.</span></li>
+        <li class="reveal" style="--d:.16s"><b>Mkers</b><span class="mono dim">PREV.</span></li>
+        <li class="reveal" style="--d:.24s"><b>DSYRE</b><span class="mono dim">PREV.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= END CREDITS ================= -->
+  <footer class="credits" id="credits">
+    <h2 class="reveal">End credits</h2>
+    <ul class="roll">
+      <li class="reveal"><span class="role caps">Written &amp; operated by</span><span class="who">Nikolaj Saudella</span></li>
+      <li class="reveal"><span class="role caps">Filmed in</span><span class="who">Bologna, Italy<small class="mono">44.49° N · 11.34° E · <span id="clock">—</span></small></span></li>
+      <li class="reveal"><span class="role caps">Now in production</span><span class="who">TESSA<small>AI real estate certification</small></span></li>
+      <li class="reveal"><span class="role caps">With the support of</span><span class="who">UniBo pre-accelerator<small>YC Startup School</small></span></li>
+      <li class="reveal"><span class="role caps">Featuring</span><span class="who">A team of 45<small>and a national title</small></span></li>
+      <li class="reveal"><span class="role caps">Age at release</span><span class="who">Nineteen</span></li>
+    </ul>
+    <div class="tbc reveal">
+      <p class="caps">To be continued</p>
+      <h3>Let’s make<br>the next scene</h3>
+      <div class="contact">
+        <a class="addr" href="mailto:niksau.ns@gmail.com">niksau.ns@gmail.com</a>
+        <button type="button" class="btn mono" id="copy"><span id="copyTag">COPY</span></button>
+        <a class="btn mono" href="https://www.linkedin.com/in/nikolajsaudella/" target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>
+      </div>
+    </div>
+    <div class="fin mono"><span>© 2026 NIKOLAJ SAUDELLA</span><span>NO SCENES WERE RUSHED IN THE MAKING OF THIS SITE</span><a href="#top" data-scroll>REWIND ↑</a></div>
+  </footer>
+</main>
+
+<script src="assets/lenis.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+
+  var lenis = (!reduced && window.Lenis) ? new Lenis({ lerp: 0.08 }) : null;
+  if (lenis) lenis.stop();
+  $$('[data-scroll]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var h = a.getAttribute('href'), el = h === '#top' ? 0 : $(h);
+      if (lenis) lenis.scrollTo(el, { duration: 1.8 }); else if (el === 0) scrollTo({ top: 0 }); else el.scrollIntoView();
+    });
+  });
+
+  /* ---- Leader: 3, 2, 1, cut ---- */
+  var leader = $('#leader'), dial = $('#dial'), count = $('#count');
+  function roll() {
+    return new Promise(function (done) {
+      if (reduced) { done(); return; }
+      var n = 3, t0 = performance.now(), beat = 620;
+      (function step(t) {
+        var e = t - t0, k = Math.floor(e / beat);
+        if (k >= 3) { done(); return; }
+        count.textContent = 3 - k;
+        dial.style.setProperty('--sweep', ((e % beat) / beat * 360).toFixed(1) + 'deg');
+        requestAnimationFrame(step);
+      })(t0);
+    });
+  }
+  var img = $('.shot img');
+  var ready = new Promise(function (r) { if (img.complete) r(); else { img.onload = img.onerror = r; } });
+  var started = false;
+  function start() {
+    if (started) return; started = true;
+    root.classList.remove('is-loading'); root.classList.add('is-ready');
+    if (reduced) root.classList.add('no-leader'); else { leader.classList.add('out'); setTimeout(function () { leader.remove(); }, 400); }
+    if (lenis) lenis.start();
+    subtitles();
+  }
+  Promise.all([roll(), ready, document.fonts ? document.fonts.ready : 0]).then(start);
+  setTimeout(start, 4200);
+
+  /* ---- Subtitles in the opening shot ---- */
+  function subtitles() {
+    var lines = ['— Hi. I’m Nikolaj.', '— Nineteen, based in Bologna.', '— Operator first. Founder second.', '— Right now I’m building TESSA.'];
+    var el = $('#subtitle'), i = 0;
+    if (reduced) { el.textContent = lines[2]; return; }
+    setInterval(function () {
+      i = (i + 1) % lines.length;
+      el.style.opacity = 0;
+      setTimeout(function () { el.textContent = lines[i]; el.style.opacity = 1; }, 260);
+    }, 3000);
+  }
+
+  /* ---- Reveals ---- */
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .2 });
+  $$('.reveal').forEach(function (el) { io.observe(el); });
+
+  /* ---- Clock + copy ---- */
+  var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit' });
+  (function tick() { $('#clock').textContent = fmt.format(new Date()); setTimeout(tick, 15000); })();
+  $('#copy').addEventListener('click', function () {
+    var tag = $('#copyTag');
+    if (navigator.clipboard) navigator.clipboard.writeText('niksau.ns@gmail.com').then(function () { tag.textContent = 'COPIED'; setTimeout(function () { tag.textContent = 'COPY'; }, 1800); }, function () {});
+  });
+
+  /* ---- Scroll: timecode, active scene, slow push-in on each insert ---- */
+  var tc = $('#tc'), links = $$('.scenes a'), scenes = ['#s1', '#s2', '#s3', '#s4', '#credits'].map(function (s) { return $(s); });
+  var inserts = $$('.insert'), opening = $('.opening .frame');
+  var RUNTIME = 150 * 24; /* 2:30 of "film", in frames */
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function frame(t) {
+    if (lenis) lenis.raf(t);
+    var y = lenis ? lenis.scroll : scrollY, vh = innerHeight;
+    var max = document.documentElement.scrollHeight - vh;
+    var f = Math.round(clamp(y / max, 0, 1) * RUNTIME);
+    tc.textContent = '00:' + pad(Math.floor(f / 1440)) + ':' + pad(Math.floor(f / 24) % 60) + ':' + pad(f % 24);
+
+    var active = -1;
+    scenes.forEach(function (s, i) { var r = s.getBoundingClientRect(); if (r.top < vh * .5 && r.bottom > vh * .5) active = i; });
+    links.forEach(function (a, i) { a.classList.toggle('on', i === active); });
+
+    if (!reduced) {
+      inserts.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        var p = clamp((vh - r.top) / (vh + r.height), 0, 1);
+        el.style.setProperty('--z', (1.12 - p * .12).toFixed(4));
+      });
+      /* the opening frame closes a little as you leave it */
+      opening.style.setProperty('--open', (1 - clamp(y / vh, 0, 1) * .25).toFixed(4));
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

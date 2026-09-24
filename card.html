@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nikolaj Saudella — Card</title>
+<meta name="description" content="Nikolaj Saudella — operator first, founder second. Currently building TESSA.">
+<meta name="theme-color" content="#07080c">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/nikolaj-900.webp" fetchpriority="high">
+<style>
+  :root {
+    --bg: #07080c;
+    --bg-2: #0e1018;
+    --ink: #eef0f6;
+    --dim: rgba(238,240,246,.52);
+    --faint: rgba(238,240,246,.08);
+    --line: rgba(238,240,246,.1);
+    --blue: #4a63ff;
+    --cyan: #5ee6ff;
+    --violet: #9a7bff;
+    --lime: #c8ff5a;
+    --pad: clamp(18px, 3.4vw, 56px);
+    --hud: 'Chakra Petch', 'Arial Narrow', Arial, sans-serif;
+    --sans: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+    --ease: cubic-bezier(.19,1,.22,1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { overflow-x: clip; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  a, button { color: inherit; font: inherit; text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  ::selection { background: var(--blue); color: #fff; }
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: 4px; }
+  .hud { font-family: var(--hud); text-transform: uppercase; letter-spacing: .08em; }
+  .tag { font-family: var(--hud); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .head { position: fixed; top: 0; left: 0; right: 0; z-index: 30; display: flex; justify-content: space-between; align-items: center; padding: clamp(16px, 2vw, 28px) var(--pad); background: linear-gradient(var(--bg) 30%, rgba(7,8,12,0)); }
+  .logo { font-family: var(--hud); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 10px; }
+  .logo i { width: 8px; height: 8px; background: var(--lime); transform: rotate(45deg); }
+  .head nav { display: flex; gap: clamp(14px, 2vw, 28px); }
+  .head nav a { font-family: var(--hud); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); transition: color .3s ease; }
+  .head nav a:hover { color: var(--ink); }
+
+  /* ---------- Hero: the card ---------- */
+  .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: clamp(20px, 4vw, 70px); padding: 110px var(--pad) 70px; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; left: 50%; top: 52%; width: min(90vw, 1100px); aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(74,99,255,.28), rgba(74,99,255,0)); pointer-events: none; }
+  .ghost { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-family: var(--hud); font-weight: 600; font-size: 21vw; line-height: 1; letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 1px rgba(238,240,246,.07); pointer-events: none; white-space: nowrap; }
+  .side h1 { font-family: var(--hud); font-weight: 600; font-size: clamp(40px, 4.4vw, 80px); line-height: .92; text-transform: uppercase; letter-spacing: -.01em; }
+  .side h1 span { color: var(--blue); }
+  .side p { margin-top: 20px; max-width: 30ch; color: var(--dim); }
+  .side.r { justify-self: end; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
+  .ctrl { display: flex; align-items: center; gap: 10px; font-family: var(--hud); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  .key { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px; border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 6px; color: var(--ink); }
+  .online { display: inline-flex; align-items: center; gap: 8px; }
+  .online i { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime); }
+
+  .scene { perspective: 1200px; }
+  .card { position: relative; width: clamp(270px, 26vw, 400px); aspect-ratio: 63 / 88; transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(calc(var(--ry, 0deg) + var(--flip, 0deg))); cursor: pointer; }
+  .face { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: linear-gradient(160deg, #1a1d2b, #0b0c12 60%); box-shadow: 0 40px 80px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.12); display: flex; flex-direction: column; padding: 14px; gap: 10px; }
+  .back { transform: rotateY(180deg); }
+  /* foil + glare follow the tilt */
+  .face::after { content: ""; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: color-dodge; opacity: .34;
+    background: repeating-linear-gradient(115deg, rgba(94,230,255,.0) 0%, rgba(94,230,255,.35) 6%, rgba(154,123,255,.35) 12%, rgba(200,255,90,.25) 18%, rgba(94,230,255,0) 24%) var(--fx, 50%) var(--fy, 50%) / 300% 300%; }
+  .face::before { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 30%), rgba(255,255,255,.28), rgba(255,255,255,0) 45%); mix-blend-mode: overlay; }
+  .c-top { display: flex; justify-content: space-between; align-items: center; font-family: var(--hud); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+  .c-top b { font-weight: 600; color: var(--lime); }
+  .c-art { position: relative; flex: 1; border-radius: 10px; overflow: hidden; background: #0d0c0c; box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+  .c-art img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; transform: scale(1.06) translate(calc(var(--ry, 0deg) / 1deg * -.35px), calc(var(--rx, 0deg) / 1deg * .35px)); }
+  .c-art .cls { position: absolute; left: 10px; top: 10px; padding: 4px 8px; border-radius: 4px; background: rgba(7,8,12,.7); font-family: var(--hud); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+  .c-name { font-family: var(--hud); font-weight: 600; font-size: clamp(20px, 1.9vw, 28px); line-height: 1; text-transform: uppercase; letter-spacing: .02em; }
+  .c-name small { display: block; margin-top: 5px; font-weight: 400; font-size: 11px; letter-spacing: .12em; color: var(--dim); }
+  .c-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .c-stats div { padding: 7px 9px; border-radius: 6px; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+  .c-stats span { display: block; font-family: var(--hud); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .c-stats b { font-family: var(--hud); font-weight: 600; font-size: 18px; line-height: 1.1; }
+  .c-foot { display: flex; justify-content: space-between; font-family: var(--hud); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .back { padding: 20px; gap: 16px; justify-content: space-between; }
+  .back h3 { font-family: var(--hud); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+  .back p, .back li { font-size: 14px; line-height: 1.35; }
+  .back .big { font-family: var(--hud); font-weight: 600; font-size: 26px; text-transform: uppercase; }
+  .back ul { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-family: var(--hud); text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ---------- Sections ---------- */
+  .sec { padding: clamp(100px, 11vw, 190px) var(--pad) 0; }
+  .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: clamp(24px, 3vw, 44px); }
+  .sec-head h2 { font-family: var(--hud); font-weight: 600; font-size: clamp(36px, 4.6vw, 84px); line-height: .95; text-transform: uppercase; }
+
+  .ach { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .ach li { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 22px; padding: 20px; min-height: 230px; border-radius: 14px; background: var(--bg-2); box-shadow: inset 0 0 0 1px var(--line); transition: transform .5s var(--ease), box-shadow .4s ease; }
+  .ach li::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease; mix-blend-mode: screen; background: linear-gradient(115deg, transparent 20%, rgba(94,230,255,.14) 40%, rgba(154,123,255,.14) 55%, transparent 75%); }
+  .ach li:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 1px rgba(94,230,255,.35); }
+  .ach li:hover::after { opacity: 1; }
+  .ach svg { width: 34px; height: 34px; }
+  .ach h3 { font-family: var(--hud); font-weight: 600; font-size: 22px; line-height: 1.05; text-transform: uppercase; margin-top: auto; }
+  .ach p { color: var(--dim); font-size: 14px; }
+  .ach .st { position: absolute; right: 16px; top: 18px; font-family: var(--hud); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--lime); }
+
+  .quest { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 70px); padding: clamp(24px, 3vw, 48px); border-radius: 20px; background: linear-gradient(135deg, rgba(74,99,255,.22), rgba(74,99,255,.04) 60%), var(--bg-2); box-shadow: inset 0 0 0 1px rgba(74,99,255,.35); }
+  .quest h3 { font-family: var(--hud); font-weight: 600; font-size: clamp(72px, 10vw, 190px); line-height: .85; text-transform: uppercase; }
+  .quest p { font-size: clamp(17px, 1.4vw, 22px); line-height: 1.4; color: rgba(238,240,246,.82); max-width: 34ch; }
+  .obj { display: grid; gap: 10px; margin-top: 26px; }
+  .obj li { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  .obj li::before { content: ""; width: 14px; height: 14px; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--dim); flex: none; }
+  .obj li.done::before { background: var(--lime); box-shadow: none; }
+  .bar { margin-top: 30px; height: 6px; border-radius: 3px; background: var(--faint); overflow: hidden; position: relative; }
+  .bar i { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, var(--blue) 0 18px, transparent 18px 26px); animation: run 1.6s linear infinite; }
+  @keyframes run { to { transform: translateX(26px); } }
+
+  .guilds li { display: grid; grid-template-columns: 60px minmax(0, 1fr) auto; align-items: center; gap: 20px; padding: clamp(16px, 2vw, 26px) 0; border-bottom: 1px solid var(--line); }
+  .guilds b { font-family: var(--hud); font-weight: 600; font-size: clamp(34px, 4.4vw, 80px); line-height: 1; text-transform: uppercase; transition: color .3s ease, transform .5s var(--ease); }
+  .guilds li:hover b { color: var(--cyan); transform: translateX(8px); }
+
+  .invite { text-align: center; padding: clamp(120px, 14vw, 230px) var(--pad) 0; }
+  .invite h2 { font-family: var(--hud); font-weight: 600; font-size: clamp(54px, 9vw, 180px); line-height: .88; text-transform: uppercase; }
+  .invite h2 span { color: var(--blue); }
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 40px; }
+  .btn { display: inline-flex; align-items: center; gap: 12px; padding: 18px 26px; border-radius: 12px; font-family: var(--hud); font-weight: 600; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; box-shadow: inset 0 0 0 1px var(--line); transition: background .3s ease, color .3s ease, transform .3s ease, box-shadow .3s ease; }
+  .btn:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1px var(--ink); }
+  .btn.main { background: var(--lime); color: #0a0b0f; box-shadow: none; }
+  .btn.main:hover { background: #fff; }
+  .addr { display: block; margin-top: 22px; font-size: 15px; color: var(--dim); }
+  .end { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: clamp(100px, 12vw, 200px); padding: 22px var(--pad) 28px; border-top: 1px solid var(--line); }
+
+  .up { opacity: 0; transform: translateY(24px); transition: opacity 1s ease, transform 1.2s var(--ease); transition-delay: var(--d, 0s); }
+  .up.in { opacity: 1; transform: none; }
+
+  @media (max-width: 1000px) {
+    .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; padding-top: 96px; }
+    .side.l { order: 0; }
+    .scene { order: 1; }
+    .side.r { order: 2; justify-self: center; text-align: center; align-items: center; }
+    .side p { margin-inline: auto; }
+    .card { width: min(78vw, 340px); }
+    .ach { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .quest { grid-template-columns: 1fr; }
+    .head nav a:not(:last-child) { display: none; }
+  }
+  @media (hover: none) { .ctrl { display: none; } }
+  @media (max-width: 520px) { .ach { grid-template-columns: 1fr; } .ach li { min-height: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; animation: none !important; }
+    .up { opacity: 1 !important; transform: none !important; }
+  }
+  html:not(.js) .up { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<header class="head">
+  <a href="#top" class="logo" data-scroll><i></i>Nikolaj Saudella</a>
+  <nav aria-label="Primary"><a href="#achievements" data-scroll>Achievements</a><a href="#quest" data-scroll>Quest</a><a href="#invite" data-scroll>Contact</a></nav>
+</header>
+
+<main>
+  <section class="hero" id="top">
+    <div class="ghost" aria-hidden="true">OPERATOR</div>
+    <div class="side l">
+      <p class="tag">Player 01 — Bologna, IT</p>
+      <h1 style="margin-top:16px">Operator first,<br><span>founder</span> second.</h1>
+      <p>Nineteen. Started as employee number one in esports, now building TESSA.</p>
+    </div>
+
+    <div class="scene">
+      <div class="card" id="card" role="button" tabindex="0" aria-label="Player card for Nikolaj Saudella. Press to flip.">
+        <div class="face front">
+          <div class="c-top"><span>#001</span><b>Founder edition</b><span>2026</span></div>
+          <div class="c-art"><img src="assets/nikolaj-900.webp" alt="Nikolaj Saudella" fetchpriority="high"><span class="cls">Class: Operator</span></div>
+          <p class="c-name">Nikolaj Saudella<small>Founder · TESSA · Bologna</small></p>
+          <div class="c-stats num">
+            <div><span>Team</span><b>45</b></div>
+            <div><span>Raised</span><b>€40K</b></div>
+            <div><span>RB Basement</span><b>10/3000</b></div>
+            <div><span>Level</span><b>19</b></div>
+          </div>
+          <div class="c-foot"><span>Tap to flip</span><span>Holo · 1 of 1</span></div>
+        </div>
+        <div class="face back">
+          <div><h3>Main quest</h3><p class="big">TESSA</p><p>AI real estate certification: underused real estate into certified workspace.</p></div>
+          <div><h3>Past guilds</h3><ul><li>RTZN</li><li>Yutoru</li><li>Mkers</li><li>DSYRE</li></ul></div>
+          <div><h3>Allies</h3><p>UniBo pre-accelerator<br>YC Startup School</p></div>
+          <div><h3>Send a party invite</h3><p>niksau.ns@gmail.com</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side r">
+      <span class="online tag"><i></i>Online — Bologna <span class="num" id="clock">—</span></span>
+      <span class="ctrl"><span class="key">⤧</span>Move to tilt</span>
+      <span class="ctrl"><span class="key">F</span>Click or press F to flip</span>
+    </div>
+  </section>
+
+  <section class="sec" id="achievements">
+    <div class="sec-head up"><h2>Achievements</h2><span class="tag num">7 / 7 unlocked</span></div>
+    <ul class="ach">
+      <li class="up"><span class="st">Unlocked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="#5ee6ff" stroke-width="1.6"><circle cx="17" cy="12" r="6"/><path d="M6 31c1.5-7 6-10 11-10s9.5 3 11 10"/><path d="M26 4v6M23 7h6"/></svg>
+        <h3>Employee #1</h3><p>First hire at an esports org.</p></li>
+      <li class="up" style="--d:.05s"><span class="st">Unlocked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="#5ee6ff" stroke-width="1.6"><circle cx="11" cy="12" r="4.5"/><circle cx="23" cy="12" r="4.5"/><path d="M3 28c1-5 4-8 8-8s7 3 8 8M15 28c1-5 4-8 8-8s7 3 8 8"/></svg>
+        <h3>Squad of 45</h3><p>Grew the team to 45 people.</p></li>
+      <li class="up" style="--d:.1s"><span class="st">Unlocked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="#5ee6ff" stroke-width="1.6"><rect x="4" y="9" width="26" height="17" rx="3"/><circle cx="17" cy="17.5" r="4"/><path d="M8 13h2M24 22h2"/></svg>
+        <h3>€40K at 18</h3><p>Raised for the esports org at eighteen.</p></li>
+      <li class="up" style="--d:.15s"><span class="st">Unlocked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="#5ee6ff" stroke-width="1.6"><path d="M10 5h14v7a7 7 0 0 1-14 0z"/><path d="M10 8H5a5 5 0 0 0 5 5M24 8h5a5 5 0 0 1-5 5M17 19v6M11 30h12M13 25h8v5h-8z"/></svg>
+        <h3>National title</h3><p>Won with the team I helped build.</p></li>
+      <li class="up" style="--d:.2s"><span class="st">Unlocked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="#5ee6ff" stroke-width="1.6"><path d="M17 3l3.8 8.2 8.9 1-6.6 6.1 1.8 8.8L17 22.7l-7.9 4.4 1.8-8.8-6.6-6.1 8.9-1z"/></svg>
+        <h3>Top 10 / 3,000</h3><p>Red Bull Basement ’26 national finalist with TESSA.</p></li>
+      <li class="up" style="--d:.25s"><span class="st">Unlocked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="#5ee6ff" stroke-width="1.6"><rect x="5" y="5" width="24" height="24" rx="4"/><path d="M11 11l6 8 6-8M17 19v5"/></svg>
+        <h3>YC Startup School</h3><p>Y Combinator’s founder programme.</p></li>
+      <li class="up" style="--d:.3s"><span class="st">Unlocked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="#5ee6ff" stroke-width="1.6"><path d="M4 14L17 7l13 7-13 7z"/><path d="M9 17v7c2.5 2.5 5 3 8 3s5.5-.5 8-3v-7M30 14v8"/></svg>
+        <h3>UniBo pre-accelerator</h3><p>Selected with TESSA.</p></li>
+      <li class="up" style="--d:.35s" aria-label="Next achievement, locked"><span class="st" style="color:var(--dim)">Locked</span>
+        <svg viewBox="0 0 34 34" fill="none" stroke="rgba(238,240,246,.4)" stroke-width="1.6"><rect x="7" y="15" width="20" height="14" rx="3"/><path d="M11 15v-4a6 6 0 0 1 12 0v4"/></svg>
+        <h3 style="color:var(--dim)">???</h3><p>Next one is being built.</p></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="quest">
+    <div class="sec-head up"><h2>Main quest</h2><span class="tag">In progress</span></div>
+    <div class="quest up">
+      <h3>TESSA</h3>
+      <div>
+        <p>AI real estate certification. Turning underused real estate into certified workspace.</p>
+        <ul class="obj">
+          <li class="done">Enter the UniBo pre-accelerator</li>
+          <li class="done">Reach the Red Bull Basement ’26 national final</li>
+          <li>Next milestone — coming soon</li>
+        </ul>
+        <div class="bar" aria-hidden="true"><i></i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-label="Previously">
+    <div class="sec-head up"><h2>Past guilds</h2><span class="tag">Before TESSA</span></div>
+    <ul class="guilds">
+      <li class="up"><span class="tag num">01</span><b>RTZN</b><span class="tag">Previously</span></li>
+      <li class="up"><span class="tag num">02</span><b>Yutoru</b><span class="tag">Previously</span></li>
+      <li class="up"><span class="tag num">03</span><b>Mkers</b><span class="tag">Previously</span></li>
+      <li class="up"><span class="tag num">04</span><b>DSYRE</b><span class="tag">Previously</span></li>
+    </ul>
+  </section>
+
+  <footer id="invite">
+    <div class="invite">
+      <p class="tag up">Looking for a co-op partner?</p>
+      <h2 class="up" style="margin-top:18px">Send a<br><span>party invite</span></h2>
+      <div class="actions up">
+        <button type="button" class="btn main" id="copy"><span id="copyTag">Copy email</span></button>
+        <a class="btn" href="https://www.linkedin.com/in/nikolajsaudella/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+      </div>
+      <a class="addr up" href="mailto:niksau.ns@gmail.com">niksau.ns@gmail.com</a>
+    </div>
+    <div class="end tag"><span>© 2026 Nikolaj Saudella</span><span>44.49° N · 11.34° E</span><a href="#top" data-scroll>Respawn ↑</a></div>
+  </footer>
+</main>
+
+<script src="assets/lenis.min.js"></script>
+<script>
+(function () {
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var lenis = (!reduced && window.Lenis) ? new Lenis({ lerp: 0.09 }) : null;
+
+  $$('[data-scroll]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault(); var h = a.getAttribute('href'), el = h === '#top' ? 0 : $(h);
+      if (lenis) lenis.scrollTo(el, { duration: 1.6 }); else if (el === 0) scrollTo({ top: 0 }); else el.scrollIntoView();
+    });
+  });
+
+  var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit' });
+  (function tick() { $('#clock').textContent = fmt.format(new Date()); setTimeout(tick, 15000); })();
+  $('#copy').addEventListener('click', function () {
+    var tag = $('#copyTag');
+    if (navigator.clipboard) navigator.clipboard.writeText('niksau.ns@gmail.com').then(function () { tag.textContent = 'Invite copied'; setTimeout(function () { tag.textContent = 'Copy email'; }, 1800); }, function () {});
+  });
+
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .15 });
+  $$('.up').forEach(function (el) { io.observe(el); });
+
+  /* ---- The card: tilt with the pointer, idle float, flip ---- */
+  var card = $('#card'), flipped = false, hover = false, rx = 0, ry = 0, tx = 0, ty = 0, fa = 0;
+  function flip() { flipped = !flipped; if (reduced) card.style.setProperty('--flip', flipped ? '180deg' : '0deg'); }
+  card.addEventListener('click', flip);
+  addEventListener('keydown', function (e) {
+    if ((e.key === 'f' || e.key === 'F') && !e.metaKey && !e.ctrlKey) flip();
+    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === card) { e.preventDefault(); flip(); }
+  });
+  if (fine && !reduced) {
+    addEventListener('pointermove', function (e) {
+      var r = card.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      var dx = (e.clientX - cx) / (innerWidth / 2), dy = (e.clientY - cy) / (innerHeight / 2);
+      tx = Math.max(-1, Math.min(1, dx)) * 16; ty = Math.max(-1, Math.min(1, dy)) * -14;
+      hover = true;
+    }, { passive: true });
+    document.addEventListener('pointerleave', function () { hover = false; });
+  }
+  var faces = $$('.face', card), t0 = performance.now();
+  function frame(t) {
+    if (lenis) lenis.raf(t);
+    if (!reduced) {
+      if (!hover) { var k = (t - t0) / 1000; tx = Math.sin(k * .7) * 9; ty = Math.cos(k * .5) * 5; }
+      rx += (ty - rx) * .08; ry += (tx - ry) * .08;
+      fa += ((flipped ? 180 : 0) - fa) * .09;
+      card.style.setProperty('--flip', fa.toFixed(2) + 'deg');
+      card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+      card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+      var fx = 50 + ry * 2.2, fy = 50 - rx * 2.2;
+      faces.forEach(function (f) {
+        f.style.setProperty('--fx', fx.toFixed(1) + '%'); f.style.setProperty('--fy', fy.toFixed(1) + '%');
+        f.style.setProperty('--gx', (50 + ry * 3).toFixed(1) + '%'); f.style.setProperty('--gy', (30 - rx * 3).toFixed(1) + '%');
+      });
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

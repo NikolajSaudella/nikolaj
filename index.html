@@ -19,7 +19,9 @@
   h1 { margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(44px, 6vw, 104px); line-height: .95; letter-spacing: -.03em; }
   h1 em { font-style: italic; }
   .small { color: var(--gray); font-size: 13px; }
-  ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 32px); }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 3vw, 48px) clamp(16px, 2vw, 32px); }
+  .round { margin: 0 0 24px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--gray); }
+  ul + .round { margin-top: clamp(80px, 9vw, 140px); }
   .shot { overflow: hidden; aspect-ratio: 16 / 10; background: #eee; }
   .shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
   a:hover .shot img { transform: scale(1.04); }
@@ -32,9 +34,39 @@
 </head>
 <body>
   <header>
-    <h1>Three directions,<br><em>one</em> operator.</h1>
+    <h1>Eight directions,<br><em>one</em> operator.</h1>
     <span class="small">Design tests — inspired by dennissnellenberg.com</span>
   </header>
+  <p class="round">Round 2 — five explorations that start from Studio</p>
+  <ul>
+    <li><a href="darkroom.html">
+      <div class="shot"><img src="assets/previews/darkroom.webp" alt="Darkroom version preview"></div>
+      <div class="meta"><h2>04 — Darkroom</h2><span class="small">Black · Instrument Serif · tungsten</span></div>
+      <p>The page is a dark studio and the pointer is the key light: the portrait is only visible where the light falls, the about text lights up as you read it, work rows glow from behind.</p>
+    </a></li>
+    <li><a href="cinema.html">
+      <div class="shot"><img src="assets/previews/cinema.webp" alt="Cinema version preview"></div>
+      <div class="meta"><h2>05 — Cinema</h2><span class="small">Letterbox · Jost · subtitle yellow</span></div>
+      <p>The site as a short film: a 3-2-1 leader, a letterboxed opening shot with live subtitles, four scenes with screenplay sluglines and close-up inserts, end credits as the contact section.</p>
+    </a></li>
+    <li><a href="chapters.html">
+      <div class="shot"><img src="assets/previews/chapters.webp" alt="Chapters version preview"></div>
+      <div class="meta"><h2>06 — Chapters</h2><span class="small">Split · Schibsted Grotesk · blue</span></div>
+      <p>A sticky portrait on one half re-frames itself for every chapter (close-up, black &amp; white, blue duotone) while the story scrolls on the other half, with an odometer chapter counter.</p>
+    </a></li>
+    <li><a href="letters.html">
+      <div class="shot"><img src="assets/previews/letters.webp" alt="Letters version preview"></div>
+      <div class="meta"><h2>07 — Letters</h2><span class="small">Anton · photo inside type · blue</span></div>
+      <p>The portrait lives inside the letters: scroll and you fly through the I of NIKOLAJ into the full photo; the numbers are windows onto the same face.</p>
+    </a></li>
+    <li><a href="card.html">
+      <div class="shot"><img src="assets/previews/card.webp" alt="Card version preview"></div>
+      <div class="meta"><h2>08 — Card</h2><span class="small">Chakra Petch · holo · lime</span></div>
+      <p>A nod to the esports years: a holographic player card that tilts and flips, achievements instead of a CV, TESSA as the main quest and a party invite to get in touch.</p>
+    </a></li>
+  </ul>
+
+  <p class="round">Round 1 — first three directions</p>
   <ul>
     <li><a href="studio.html">
       <div class="shot"><img src="assets/previews/studio.webp" alt="Studio version preview"></div>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nikolaj Saudella — Letters</title>
+<meta name="description" content="Nikolaj Saudella — operator first, founder second. Currently building TESSA.">
+<meta name="theme-color" content="#000000">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/nikolaj.webp" fetchpriority="high">
+<style>
+  :root {
+    --black: #000;
+    --ink: #f4f3f1;
+    --dim: rgba(244,243,241,.5);
+    --line: rgba(244,243,241,.14);
+    --blue: #3e5bf6;
+    --pad: clamp(18px, 3vw, 52px);
+    --display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
+    --sans: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+    --ease: cubic-bezier(.19,1,.22,1);
+    --photo: url("assets/nikolaj.webp");
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { overflow-x: clip; }
+  body { background: var(--black); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  a, button { color: inherit; font: inherit; text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  ::selection { background: var(--blue); color: #fff; }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+  .label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+  .d { font-family: var(--display); font-weight: 400; text-transform: uppercase; line-height: .86; letter-spacing: -.005em; }
+  /* type filled with the portrait; the photo stays put while the letters move over it */
+  .fill { color: transparent; -webkit-text-stroke: 1px rgba(244,243,241,.3); background: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.1)) fixed, var(--photo) 50% 28% / cover no-repeat fixed; -webkit-background-clip: text; background-clip: text; }
+
+  .head { position: fixed; top: 0; left: 0; right: 0; z-index: 30; display: flex; justify-content: space-between; align-items: center; padding: clamp(18px, 2vw, 30px) var(--pad); mix-blend-mode: difference; color: #fff; }
+  .head nav { display: flex; gap: clamp(16px, 2vw, 30px); font-size: 14px; }
+  .head .logo { font-weight: 500; }
+
+  /* ---------- Zoom through the I ---------- */
+  .zoom { position: relative; height: 320vh; }
+  .zoom-stick { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  .photo { position: absolute; inset: 0; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 24%; transform: scale(var(--pz, 1.12)); }
+  .knock { position: absolute; inset: 0; display: grid; place-items: center; background: #000; color: #fff; mix-blend-mode: multiply; opacity: var(--ko, 1); }
+  .knock h1, .outline h1 { font-size: var(--fs, 30vw); white-space: nowrap; text-align: center; transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--kz, 1)); transform-origin: var(--kx, 50%) var(--ky, 50%); will-change: transform; }
+  .knock h1 br, .outline h1 br { display: none; }
+  /* a faint outline keeps the letters readable where the photo is dark */
+  .outline { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; opacity: var(--lo, 1); }
+  .outline h1 { color: transparent; -webkit-text-stroke: 1px rgba(244,243,241,.28); }
+  .zoom-ui { position: absolute; left: var(--pad); right: var(--pad); bottom: clamp(20px, 3vh, 34px); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; opacity: var(--uo, 1); }
+  .after { position: absolute; left: var(--pad); right: var(--pad); bottom: clamp(28px, 6vh, 70px); display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; opacity: var(--ao, 0); transform: translateY(calc((1 - var(--ao, 0)) * 40px)); }
+  .after::before { content: ""; position: absolute; left: calc(var(--pad) * -1); right: calc(var(--pad) * -1); bottom: calc(clamp(28px, 6vh, 70px) * -1); height: 70vh; z-index: -1; background: linear-gradient(to top, rgba(0,0,0,.8), rgba(0,0,0,0)); }
+  .after h2 { font-size: clamp(64px, 9.4vw, 190px); }
+  .after h2 span { color: var(--blue); }
+  .after p { max-width: 30ch; text-align: right; color: rgba(244,243,241,.8); }
+
+  /* ---------- About ---------- */
+  .about { padding: clamp(120px, 14vw, 240px) var(--pad); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr); gap: 40px; }
+  .about p.lead { font-size: clamp(28px, 3vw, 54px); line-height: 1.15; letter-spacing: -.03em; font-weight: 500; }
+  .about p.lead .d { font-size: 1.18em; letter-spacing: 0; }
+  .about p.lead .hl { color: var(--blue); }
+
+  /* ---------- Numbers filled with the portrait ---------- */
+  .nums li { position: relative; padding: 0 var(--pad) clamp(16px, 2vw, 30px); border-top: 1px solid var(--line); }
+  .nums b { display: block; text-align: center; font-size: clamp(130px, 25vw, 480px); padding-top: .06em; }
+  .nums li > span { position: absolute; left: var(--pad); bottom: clamp(16px, 2vw, 30px); max-width: 24ch; }
+  .nums span { padding-bottom: 2.2vw; color: var(--dim); font-size: clamp(15px, 1.2vw, 19px); }
+  .nums span strong { display: block; font-weight: 500; color: var(--ink); }
+
+  /* ---------- Now ---------- */
+  .now { position: relative; padding: clamp(120px, 14vw, 240px) var(--pad); display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+  .now h2 { font-size: clamp(120px, 21vw, 400px); }
+  .now-word { position: relative; justify-self: start; }
+  .sticker { position: absolute; top: -6%; right: -8%; display: grid; place-items: center; width: clamp(96px, 9vw, 150px); aspect-ratio: 1; border-radius: 50%; background: var(--blue); color: #fff; font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; transform: rotate(-12deg); animation: bob 6s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: rotate(-4deg) translateY(-8px); } }
+  .now p { font-size: clamp(18px, 1.5vw, 24px); line-height: 1.4; color: rgba(244,243,241,.82); max-width: 32ch; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .tags span { padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--dim); }
+
+  /* ---------- Previously: outlines that fill on hover ---------- */
+  .prev { padding: 0 var(--pad) clamp(120px, 14vw, 240px); }
+  .prev .label { display: block; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .prev li { border-bottom: 1px solid var(--line); overflow: hidden; }
+  .prev b { display: block; font-size: clamp(90px, 14vw, 260px); color: transparent; -webkit-text-stroke: 1px rgba(244,243,241,.4); background: var(--photo) 50% 28% / cover no-repeat fixed; -webkit-background-clip: text; background-clip: text; background-size: 0 0; transition: -webkit-text-stroke-color .4s ease; padding-top: .05em; }
+  .prev li:hover b, .prev li.on b { background-size: cover; -webkit-text-stroke-color: transparent; }
+
+  /* ---------- Contact ---------- */
+  .contact { padding: 0 var(--pad); }
+  .contact h2 { font-size: clamp(150px, 31vw, 600px); text-align: center; line-height: .8; }
+  .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding: 28px 0; border-top: 1px solid var(--line); margin-top: 30px; }
+  .row .addr { font-size: clamp(22px, 2.4vw, 40px); letter-spacing: -.03em; font-weight: 500; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { padding: 14px 20px; border-radius: 999px; border: 1px solid var(--line); font-size: 14px; transition: background .4s ease, border-color .4s ease, color .4s ease; }
+  .btn:hover { background: var(--ink); color: var(--black); border-color: var(--ink); }
+  .btn.blue { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn.blue:hover { background: #fff; color: var(--black); border-color: #fff; }
+  .end { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 22px 0 28px; border-top: 1px solid var(--line); font-size: 13px; color: var(--dim); }
+
+  .up { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1.3s var(--ease); transition-delay: var(--d, 0s); }
+  .up.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .knock h1 br, .outline h1 br { display: inline; }
+    .knock h1, .outline h1 { line-height: .82; }
+    .after { flex-direction: column; align-items: flex-start; }
+    .after p { text-align: left; }
+    .about, .now { grid-template-columns: 1fr; }
+    .nums li > span { position: static; display: block; }
+    .nums span { padding-bottom: 10px; }
+    .sticker { right: -4%; }
+    .fill, .prev b { background-attachment: scroll, scroll; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; animation: none !important; }
+    .up { opacity: 1 !important; transform: none !important; }
+  }
+  html:not(.js) .up { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<header class="head">
+  <a href="#top" class="logo" data-scroll>Nikolaj Saudella</a>
+  <nav aria-label="Primary"><a href="#about" data-scroll>About</a><a href="#now" data-scroll>Now</a><a href="#contact" data-scroll>Contact</a></nav>
+</header>
+
+<main>
+  <section class="zoom" id="top">
+    <div class="zoom-stick" id="stick">
+      <div class="photo"><img src="assets/nikolaj.webp" srcset="assets/nikolaj-900.webp 900w, assets/nikolaj.webp 1334w" sizes="100vw" width="1334" height="2000" alt="Portrait of Nikolaj Saudella" fetchpriority="high"></div>
+      <div class="knock" aria-hidden="true"><h1 class="d" id="word">N<span id="eye">I</span>KO<br>LAJ</h1></div>
+      <div class="outline" aria-hidden="true"><h1 class="d">NIKO<br>LAJ</h1></div>
+      <div class="zoom-ui label"><span>Bologna, IT — nineteen</span><span>Scroll into the I ↓</span></div>
+      <div class="after">
+        <h2 class="d">Operator first,<br><span>founder</span> second.</h2>
+        <p>Nikolaj Saudella. Currently building TESSA, AI real estate certification.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <p class="label up">About</p>
+    <p class="lead up" style="--d:.1s">As employee number one I grew an esports org to <span class="d hl">45 people</span>, <span class="d hl">€40K</span> raised at eighteen and a national title. Now I’m building <span class="d">TESSA</span>, turning underused real estate into certified workspace.</p>
+  </section>
+
+  <ul class="nums">
+    <li><b class="d fill">45</b><span class="up"><strong>People</strong>on the team, grown from employee number one</span></li>
+    <li><b class="d fill">€40K</b><span class="up"><strong>Raised</strong>at eighteen</span></li>
+    <li><b class="d fill">10/3000</b><span class="up"><strong>Red Bull Basement ’26</strong>national finalist</span></li>
+    <li><b class="d fill">YC</b><span class="up"><strong>Startup School</strong>plus the UniBo pre-accelerator</span></li>
+  </ul>
+
+  <section class="now" id="now">
+    <div class="now-word up"><h2 class="d">TESSA</h2><span class="sticker">Now</span></div>
+    <div class="up" style="--d:.15s">
+      <p>AI real estate certification. We turn underused real estate into certified workspace.</p>
+      <div class="tags"><span>UniBo pre-accelerator</span><span>Red Bull Basement ’26 finalist</span></div>
+    </div>
+  </section>
+
+  <section class="prev" aria-label="Previously">
+    <span class="label">Previously</span>
+    <ul id="prev">
+      <li><b class="d">RTZN</b></li>
+      <li><b class="d">Yutoru</b></li>
+      <li><b class="d">Mkers</b></li>
+      <li><b class="d">DSYRE</b></li>
+    </ul>
+  </section>
+
+  <footer class="contact" id="contact">
+    <h2 class="d fill">Say hi</h2>
+    <div class="row">
+      <a class="addr" href="mailto:niksau.ns@gmail.com">niksau.ns@gmail.com</a>
+      <div class="btns">
+        <button type="button" class="btn blue" id="copy"><span id="copyTag">Copy email</span></button>
+        <a class="btn" href="https://www.linkedin.com/in/nikolajsaudella/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+      </div>
+    </div>
+    <div class="end"><span>© 2026 Nikolaj Saudella</span><span>Bologna <span id="clock">—</span></span><a href="#top" data-scroll>Back into the I ↑</a></div>
+  </footer>
+</main>
+
+<script src="assets/lenis.min.js"></script>
+<script>
+(function () {
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var lenis = (!reduced && window.Lenis) ? new Lenis({ lerp: 0.09 }) : null;
+
+  $$('[data-scroll]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault(); var h = a.getAttribute('href'), el = h === '#top' ? 0 : $(h);
+      if (lenis) lenis.scrollTo(el, { duration: 1.8 }); else if (el === 0) scrollTo({ top: 0 }); else el.scrollIntoView();
+    });
+  });
+
+  var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit' });
+  (function tick() { $('#clock').textContent = fmt.format(new Date()); setTimeout(tick, 15000); })();
+  $('#copy').addEventListener('click', function () {
+    var tag = $('#copyTag');
+    if (navigator.clipboard) navigator.clipboard.writeText('niksau.ns@gmail.com').then(function () { tag.textContent = 'Copied'; setTimeout(function () { tag.textContent = 'Copy email'; }, 1800); }, function () {});
+  });
+
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .2 });
+  $$('.up').forEach(function (el) { io.observe(el); });
+
+  /* ---- Fit the word to the screen, find the I ---- */
+  var word = $('#word'), eye = $('#eye'), stick = $('#stick'), zoom = $('.zoom');
+  var eyeX = 0, eyeY = 0;
+  function fit() {
+    stick.style.setProperty('--kz', 1); stick.style.setProperty('--tx', '0px'); stick.style.setProperty('--ty', '0px');
+    stick.style.setProperty('--fs', '100px');
+    var w = word.getBoundingClientRect().width;
+    stick.style.setProperty('--fs', (100 * innerWidth * (innerWidth > 900 ? .92 : .9) / w).toFixed(2) + 'px');
+    var wr = word.getBoundingClientRect(), er = eye.getBoundingClientRect();
+    /* zoom origin: the middle of the I's stem, in the word's own box */
+    stick.style.setProperty('--kx', ((er.left + er.width / 2 - wr.left)).toFixed(1) + 'px');
+    stick.style.setProperty('--ky', ((er.top + er.height * .52 - wr.top)).toFixed(1) + 'px');
+    eyeX = er.left + er.width / 2; eyeY = er.top + er.height * .52;
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(fit);
+  fit();
+  addEventListener('resize', fit);
+
+  /* ---- Previously: on touch, the row in the middle fills ---- */
+  var prevRows = $$('#prev li');
+
+  function frame(t) {
+    if (lenis) lenis.raf(t);
+    var vh = innerHeight;
+    var r = zoom.getBoundingClientRect();
+    var p = reduced ? 1 : clamp(-r.top / (r.height - vh), 0, 1);
+    var z = clamp(p / .7, 0, 1), e = z * z * z;             /* slow start, then rush through */
+    stick.style.setProperty('--kz', (1 + e * 70).toFixed(3));
+    /* while it grows, the I slides to the middle of the screen */
+    var m = clamp(z * 1.6, 0, 1), mm = m * m * (3 - 2 * m);
+    stick.style.setProperty('--tx', ((innerWidth / 2 - eyeX) * mm).toFixed(1) + 'px');
+    stick.style.setProperty('--ty', ((vh / 2 - eyeY) * mm).toFixed(1) + 'px');
+    stick.style.setProperty('--lo', (1 - clamp(z / .25, 0, 1)).toFixed(3));
+    stick.style.setProperty('--ko', (1 - clamp((z - .85) / .15, 0, 1)).toFixed(3));
+    stick.style.setProperty('--pz', (1.12 - .12 * z).toFixed(4));
+    stick.style.setProperty('--uo', (1 - clamp(p / .15, 0, 1)).toFixed(3));
+    stick.style.setProperty('--ao', clamp((p - .72) / .2, 0, 1).toFixed(3));
+
+    if (!fine) prevRows.forEach(function (li) { var b = li.getBoundingClientRect(); li.classList.toggle('on', b.top < vh * .55 && b.bottom > vh * .45); });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
